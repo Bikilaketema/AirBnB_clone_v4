@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Add cache ID to assets
+cache_id=$(python3 -c 'import uuid; print(str(uuid.uuid4()))')
+sed -i "s@../static/@../static/?v=$cache_id@" web_dynamic/templates/0-hbnb.html

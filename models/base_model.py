@@ -10,7 +10,6 @@ import sqlalchemy
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
-import inspect
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
@@ -59,7 +58,7 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self):
+    def to_dict(self, save_fs=None):
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
         if "created_at" in new_dict:
@@ -69,14 +68,9 @@ class BaseModel:
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
-        a_frame = inspect.currentframe().f_back
-        a_func_name = a_frame.f_code.co_name
-        a_class_name = ''
-        if 'self' in a_frame.f_locals:
-            a_class_name = a_frame.f_locals["self"].__class__.__name__
-        is_fs_writing = a_func_name == 'save' and a_class_name == 'FileStorage'
-        if 'password' in new_dict and not is_fs_writing:
-            del new_dict['password']
+        if save_fs is None:
+            if "password" in new_dict:
+                del new_dict["password"]
         return new_dict
 
     def delete(self):

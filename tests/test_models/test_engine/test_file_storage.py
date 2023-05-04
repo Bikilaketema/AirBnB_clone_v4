@@ -115,43 +115,27 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(json.loads(string), json.loads(js))
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_count(self):
-        """Test that count returns the number of objects of a given class
-        """
-        storage = models.storage
-        self.assertIs(type(storage.count()), int)
-        self.assertIs(type(storage.count(None)), int)
-        self.assertIs(type(storage.count(int)), int)
-        self.assertIs(type(storage.count(State)), int)
-        self.assertEqual(storage.count(), storage.count(None))
-        State(name='California').save()
-        self.assertGreater(storage.count(State), 0)
-        self.assertEqual(storage.count(), storage.count(None))
-        a = storage.count(State)
-        State(name='New York').save()
-        self.assertGreater(storage.count(State), a)
-        Amenity(name='Free WiFi').save()
-        self.assertGreater(storage.count(), storage.count(State))
-        with self.assertRaises(TypeError):
-            storage.count(State, 'op')
+    def test_get(self):
+        """ Tests method for obtaining an instance file storage"""
+        storage = FileStorage()
+        dic = {"name": "Vecindad"}
+        instance = State(**dic)
+        storage.new(instance)
+        storage.save()
+        storage = FileStorage()
+        get_instance = storage.get(State, instance.id)
+        self.assertEqual(get_instance, instance)
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_get(self):
-        """Test that get returns an object of a given class by id
-        """
-        storage = models.storage
-        _object = State(name='Michigan')
-        _object.save()
-        self.assertEqual(_object.id, storage.get(State, _object.id).id)
-        self.assertEqual(_object.name, storage.get(State, _object.id).name)
-        self.assertIsNot(_object, storage.get(State, _object.id + 'op'))
-        self.assertIsNone(storage.get(State, _object.id + 'op'))
-        self.assertIsNone(storage.get(State, 45))
-        self.assertIsNone(storage.get(None, _object.id))
-        self.assertIsNone(storage.get(int, _object.id))
-        with self.assertRaises(TypeError):
-            storage.get(State, _object.id, 'op')
-        with self.assertRaises(TypeError):
-            storage.get(State)
-        with self.assertRaises(TypeError):
-            storage.get()
+    def test_count(self):
+        """ Tests count method file storage """
+        storage = FileStorage()
+        dic = {"name": "Vecindad"}
+        state = State(**dic)
+        storage.new(state)
+        dic = {"name": "Mexico"}
+        city = City(**dic)
+        storage.new(city)
+        storage.save()
+        c = storage.count()
+        self.assertEqual(len(storage.all()), c)

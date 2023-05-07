@@ -1,5 +1,11 @@
 #!/usr/bin/python3
-""" Starts a Flask Web Application """
+"""
+This script starts a Flask web application and serves a web page 
+with information on available states, cities, and amenities.
+Usage: python3 -m web_flask.1-hbnb
+Dependencies: models/storage.py, models/state.py, models/city.py, 
+models/amenity.py, models/place.py, Flask, uuid
+"""
 from models import storage
 from models.state import State
 from models.city import City
@@ -16,13 +22,24 @@ cache_id = str(uuid.uuid4())
 
 @app.teardown_appcontext
 def close_db(error):
-    """ Remove the current SQLAlchemy Session """
+    """
+    Remove the current SQLAlchemy Session after the application context ends.
+    """
     storage.close()
 
 
 @app.route('/1-hbnb/', strict_slashes=False)
 def hbnb():
-    """ HBNB is alive! """
+    """
+    Serve a web page with information on available states, cities, and amenities.
+
+    Returns:
+    - A rendered HTML template '1-hbnb.html', containing:
+        - A list of available states, sorted alphabetically by name, 
+            with their associated cities.
+        - A list of available amenities, sorted alphabetically by name.
+        - A list of available places, sorted alphabetically by name.
+    """
     states = storage.all(State).values()
     states = sorted(states, key=lambda k: k.name)
     st_ct = []

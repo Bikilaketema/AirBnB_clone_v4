@@ -1,5 +1,10 @@
 #!/usr/bin/python3
-""" Starts a Flask Web Application """
+"""
+This module starts a Flask Web Application to display the HBNB page.
+
+It imports the necessary models from the models directory and uses Flask and
+Jinja templates to render the web pages.
+"""
 from models import storage
 from models.state import State
 from models.city import City

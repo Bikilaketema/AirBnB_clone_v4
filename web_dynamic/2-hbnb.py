@@ -16,13 +16,13 @@ cache_id = str(uuid.uuid4())
 
 @app.teardown_appcontext
 def close_db(error):
-    """ Remove the current SQLAlchemy Session """
+    """Closes the current SQLAlchemy Session."""
     storage.close()
 
 
 @app.route('/2-hbnb/', strict_slashes=False)
 def hbnb():
-    """ HBNB is alive! """
+    """Displays the main HBNB HTML page."""
     states = storage.all(State).values()
     states = sorted(states, key=lambda k: k.name)
     st_ct = []

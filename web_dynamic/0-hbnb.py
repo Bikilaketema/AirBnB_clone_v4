@@ -1,5 +1,21 @@
 #!/usr/bin/python3
-""" Starts a Flash Web Application """
+"""
+Starts a Flask web application that displays a page with data from a HBNB
+clone database. The page displays a list of states, their cities, amenities, 
+and places sorted alphabetically. 
+
+To run the application, execute this script with Python 3. 
+The application will run on http://0.0.0.0:5000/0-hbnb/.
+
+Dependencies:
+- Flask
+- SQLAlchemy
+- A clone database with tables for states, cities, amenities, and places
+
+Usage: 
+- Run the script with Python 3: `python3 FILENAME.py`
+- Navigate to http://0.0.0.0:5000/0-hbnb/ in a web browser to view the web page
+"""
 from models import storage
 from models.state import State
 from models.city import City
@@ -16,13 +32,13 @@ cache_id = str(uuid.uuid4())
 
 @app.teardown_appcontext
 def close_db(error):
-    """ Remove the current SQLAlchemy Session """
+    """Closes the database at the end of the request."""
     storage.close()
 
 
 @app.route('/0-hbnb/', strict_slashes=False)
 def hbnb():
-    """ HBNB is alive! """
+    """Returns a rendered template for the HBNB page."""
     states = storage.all(State).values()
     states = sorted(states, key=lambda k: k.name)
     st_ct = []
